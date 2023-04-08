@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
@@ -87,7 +88,11 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           children: [
             ElevatedButton(
-                onPressed: () => storedata(), child: Text("store data"))
+                onPressed: () => storedatafirestore(),
+                child: Text("store data to firestore")),
+            ElevatedButton(
+                onPressed: () => storedatardb(),
+                child: Text("store data to realtime db"))
           ],
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
@@ -110,12 +115,24 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  Future<void> storedata() async {
+  Future<void> storedatafirestore() async {
     WidgetsFlutterBinding.ensureInitialized();
     await Firebase.initializeApp(
         options: DefaultFirebaseOptions.currentPlatform);
     final db = FirebaseFirestore.instance;
     final data = {"name": "Tokyo", "country": "Japan"};
     db.collection("Users").add(data);
+  }
+
+  Future<void> storedatardb() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    DatabaseReference ref = FirebaseDatabase.instance.ref().child("ali");
+    await ref.set({
+      "name": "John",
+      "age": 18,
+      "address": {"line1": "100 Mountain View"}
+    });
   }
 }
