@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+void main() {
   runApp(const MyApp());
 }
 
@@ -88,7 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
         // in the middle of the parent.
         child: Column(
           children: [
-            ElevatedButton(onPressed: storedata(), child: Text("store data"))
+            ElevatedButton(
+                onPressed: () => storedata(), child: Text("store data"))
           ],
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
@@ -111,7 +110,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-  storedata() async {
+  Future<void> storedata() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
     final db = FirebaseFirestore.instance;
     final data = {"name": "Tokyo", "country": "Japan"};
     db.collection("Users").add(data);
