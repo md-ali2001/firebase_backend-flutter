@@ -55,6 +55,8 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  var ffd;
+  dynamic data2;
   int _counter = 0;
 
   void _incrementCounter() {
@@ -92,7 +94,11 @@ class _MyHomePageState extends State<MyHomePage> {
                 child: Text("store data to firestore")),
             ElevatedButton(
                 onPressed: () => storedatardb(),
-                child: Text("store data to realtime db"))
+                child: Text("store data to realtime db")),
+            ElevatedButton(
+                onPressed: () => readfirestore(),
+                child: Text("read data from firestore")),
+            Text("firestore fetched data: $ffd")
           ],
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
@@ -133,6 +139,23 @@ class _MyHomePageState extends State<MyHomePage> {
       "name": "John",
       "age": 18,
       "address": {"line1": "100 Mountain View"}
+    });
+  }
+
+  Future<void> readfirestore() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    DocumentSnapshot snapshot;
+    final data = await FirebaseFirestore.instance
+        .collection("Users")
+        .doc('0qd48FGmUSlVasowHc1K')
+        .get();
+    snapshot = data;
+    data2 = snapshot.data;
+    print(snapshot.data());
+    setState(() {
+      ffd = snapshot.data().toString();
     });
   }
 }
