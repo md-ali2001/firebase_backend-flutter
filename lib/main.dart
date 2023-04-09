@@ -56,6 +56,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   var ffd;
+  var rdbd;
   dynamic data2;
   int _counter = 0;
 
@@ -98,7 +99,11 @@ class _MyHomePageState extends State<MyHomePage> {
             ElevatedButton(
                 onPressed: () => readfirestore(),
                 child: Text("read data from firestore")),
-            Text("firestore fetched data: $ffd")
+            ElevatedButton(
+                onPressed: () => readrealdb(),
+                child: Text("read data from realtime db")),
+            Text("firestore fetched data: $ffd"),
+            Text("realtime db fetched data: $rdbd")
           ],
           // Column is also a layout widget. It takes a list of children and
           // arranges them vertically. By default, it sizes itself to fit its
@@ -157,5 +162,20 @@ class _MyHomePageState extends State<MyHomePage> {
     setState(() {
       ffd = snapshot.data().toString();
     });
+  }
+
+  Future<void> readrealdb() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await Firebase.initializeApp(
+        options: DefaultFirebaseOptions.currentPlatform);
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('ali').get();
+    if (snapshot.exists) {
+      setState(() {
+        rdbd = snapshot.value.toString();
+      });
+    } else {
+      print('No data available.');
+    }
   }
 }
